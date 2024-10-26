@@ -8,7 +8,7 @@ import { useContentStore } from "@/lib/content-store";
 
 interface ContentGridProps {
   type?: string;
-  filter?: 'favorites' | 'watchLater' | 'history' | 'rated';
+  filter?: "favorites" | "watchLater" | "history" | "rated";
 }
 
 export default function ContentGrid({ type, filter }: ContentGridProps) {
@@ -16,19 +16,25 @@ export default function ContentGrid({ type, filter }: ContentGridProps) {
   const { items } = useContentStore();
 
   const filteredItems = items
-    .filter(item => !type || item.type === type)
-    .filter(item => 
-      item.title.toLowerCase().includes(search.toLowerCase()) ||
-      item.genre.some(g => g.toLowerCase().includes(search.toLowerCase()))
+    .filter((item) => !type || item.type === type)
+    .filter(
+      (item) =>
+        item.title.toLowerCase().includes(search.toLowerCase()) ||
+        item.genre.some((g) => g.toLowerCase().includes(search.toLowerCase()))
     )
-    .filter(item => {
+    .filter((item) => {
       if (!filter) return true;
       switch (filter) {
-        case 'favorites': return item.rating === 5;
-        case 'watchLater': return !item.watched;
-        case 'history': return item.watched;
-        case 'rated': return item.rating !== null;
-        default: return true;
+        case "favorites":
+          return item.rating === 5;
+        case "watchLater":
+          return !item.watched;
+        case "history":
+          return item.watched;
+        case "rated":
+          return item.rating !== null;
+        default:
+          return true;
       }
     });
 
@@ -45,9 +51,63 @@ export default function ContentGrid({ type, filter }: ContentGridProps) {
       </div>
 
       <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-        {filteredItems.map((item) => (
-          <ContentCard key={item.id} content={item} />
-        ))}
+        {filteredItems.map((item) => {
+          // Ensure item.platform is one of the allowed types
+          const validPlatforms: Array<
+            | "netflix"
+            | "prime"
+            | "apple"
+            | "hbo"
+            | "disney"
+            | "theaters"
+            | "youtube"
+            | "spotify"
+            | "applepodcasts"
+          > = [
+            "netflix",
+            "prime",
+            "apple",
+            "hbo",
+            "disney",
+            "theaters",
+            "youtube",
+            "spotify",
+            "applepodcasts",
+          ];
+
+          if (!validPlatforms.includes(item.platform as any)) {
+            return null; // Skip invalid items
+          }
+
+          return (
+            <ContentCard
+              key={item.id}
+              content={
+                item as {
+                  id: string;
+                  title: string;
+                  type: string;
+                  platform:
+                    | "netflix"
+                    | "prime"
+                    | "apple"
+                    | "hbo"
+                    | "disney"
+                    | "theaters"
+                    | "youtube"
+                    | "spotify"
+                    | "applepodcasts";
+                  genre: string[];
+                  releaseDate: string;
+                  duration?: string;
+                  watched: boolean;
+                  rating: number;
+                  image: string;
+                }
+              }
+            />
+          );
+        })}
       </div>
 
       {filteredItems.length === 0 && (
