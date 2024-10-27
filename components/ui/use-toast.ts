@@ -1,3 +1,3 @@
 import { Toast } from "@/components/ui/toast";
 
-export const useToast = () => Toast;
+export { Toast as toast };

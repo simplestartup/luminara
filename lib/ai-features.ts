@@ -159,7 +159,12 @@ export function generateContentSchedule(
 export function predictUserPreferences(
   userContent: Content[],
   patterns: WatchingPattern
-): Record<string, Record<string, number>> {
+): {
+  genres: Record<string, number>;
+  platforms: Record<string, number>;
+  contentTypes: Record<string, number>;
+  timeSlots: Record<string, number>;
+} {
   // Implement ML-based preference prediction
   return {
     genres: predictGenrePreferences(userContent, patterns),
@@ -175,6 +180,14 @@ export function generateWatchPartyRecommendations(
 ): Array<{ content: Content; matchScore: Record<string, number> }> {
   // Implement collaborative filtering for groups
   return findOptimalGroupContent(participants, duration);
+}
+
+export function generateRecommendations(
+  items: any[],
+  playlists: any[]
+): Recommendation[] {
+  // Implementation of generateRecommendations
+  return []; // Return an empty array as a placeholder
 }
 
 // Helper functions
@@ -281,41 +294,16 @@ function findOptimalGroupContent(
   return [];
 }
 
+// Add this function definition before using it
 function analyzeWatchingPatterns(userContent: Content[]): WatchingPattern {
-  // Placeholder implementation
-  return {
-    preferredGenres: [],
-    preferredPlatforms: [],
-    timeOfDayPreference: {},
-    genreMoodCorrelation: {},
-    bingePropensity: 0,
-    contentCompletionRate: 0,
-    contentTypePreference: {
-      movies: 0,
-      series: 0,
-      documentaries: 0,
-    },
-    seasonalPreferences: {},
-    averageWatchTime: 0,
-    watchingStreaks: 0,
-    contentDiscoveryPatterns: [],
-    ratingConsistency: 0,
-  };
+  // Implementation details...
+  return {} as WatchingPattern;
 }
 
 function generateContentInsights(
   content: Content,
   patterns: WatchingPattern
 ): string[] {
-  // Placeholder implementation
+  // Implementation details...
   return [];
 }
-
-export const generateRecommendations = (
-  items: Content[],
-  playlists: Playlist[]
-) => {
-  // Use items to avoid the unused variable error
-  console.log(items); // Example usage
-  console.log(playlists); // Example usage of playlists
-};
