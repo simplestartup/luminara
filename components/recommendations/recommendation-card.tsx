@@ -20,9 +20,13 @@ interface RecommendationCardProps {
 }
 
 export default function RecommendationCard({
-  recommendation
+  recommendation,
 }: RecommendationCardProps) {
-  const { content, score, reason, source } = recommendation;
+  // Check if 'reason' exists in the Recommendation type
+  const { content, score, source, reasons } = recommendation; // Changed 'reason' to 'reasons'
+
+  const reason = reasons; // Updated to use 'reasons'
+
   const { addContent } = useContentStore();
   const [isAdding, setIsAdding] = useState(false);
 
@@ -34,7 +38,7 @@ export default function RecommendationCard({
         type: content.type,
         platform: content.platform,
         genre: content.genre,
-        releaseDate: content.releaseDate
+        releaseDate: content.releaseDate,
       });
       toast.success("Added to your library");
     } catch (error) {
@@ -89,11 +93,7 @@ export default function RecommendationCard({
               </Tooltip>
             </TooltipProvider>
           </div>
-          <Button
-            size="sm"
-            onClick={handleAdd}
-            disabled={isAdding}
-          >
+          <Button size="sm" onClick={handleAdd} disabled={isAdding}>
             <Plus className="h-4 w-4 mr-2" />
             Add to Library
           </Button>

@@ -1,3 +1,3 @@
-import { useToast as useToastOriginal } from "@/components/ui/toast";
+import { Toast } from "@/components/ui/toast";
 
-export const useToast = useToastOriginal;
+export const useToast = () => Toast;

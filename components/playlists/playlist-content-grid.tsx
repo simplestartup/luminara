@@ -5,24 +5,35 @@ import { Search, Film } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useContentStore, type Playlist } from "@/lib/content-store";
 import PlaylistContentCard from "./playlist-content-card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface PlaylistContentGridProps {
   playlist: Playlist;
 }
 
-export default function PlaylistContentGrid({ playlist }: PlaylistContentGridProps) {
+export default function PlaylistContentGrid({
+  playlist,
+}: PlaylistContentGridProps) {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("dateAdded");
   const { items } = useContentStore();
 
-  const playlistContent = items.filter(item => playlist.contentIds.includes(item.id));
+  const playlistContent = items.filter((item) =>
+    playlist.contentIds.includes(item.id)
+  );
 
   const filteredContent = playlistContent
-    .filter(item =>
-      item.title.toLowerCase().includes(search.toLowerCase()) ||
-      item.type.toLowerCase().includes(search.toLowerCase()) ||
-      item.genre.some(g => g.toLowerCase().includes(search.toLowerCase()))
+    .filter(
+      (item) =>
+        item.title.toLowerCase().includes(search.toLowerCase()) ||
+        item.type.toLowerCase().includes(search.toLowerCase()) ||
+        item.genre.some((g) => g.toLowerCase().includes(search.toLowerCase()))
     )
     .sort((a, b) => {
       switch (sortBy) {
@@ -80,7 +91,7 @@ export default function PlaylistContentGrid({ playlist }: PlaylistContentGridPro
           <PlaylistContentCard
             key={item.id}
             content={item}
-            playlist={playlist}
+            playlistId={playlist.id}
           />
         ))}
       </div>

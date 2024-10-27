@@ -6,10 +6,23 @@ import { Star, Clock, Check, Pencil, Trash2 } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useContentStore, Content } from "@/lib/content-store";
 import { toast } from "sonner";
@@ -23,7 +36,7 @@ const platformColors = {
   theaters: "bg-amber-500",
   youtube: "bg-red-600",
   spotify: "bg-green-500",
-  applepodcasts: "bg-purple-600"
+  applepodcasts: "bg-purple-600",
 };
 
 interface PlaylistContentCardProps {
@@ -31,8 +44,11 @@ interface PlaylistContentCardProps {
   playlistId: string;
 }
 
-export default function PlaylistContentCard({ content, playlistId }: PlaylistContentCardProps) {
-  const { updateContent, updatePlaylist } = useContentStore();
+export default function PlaylistContentCard({
+  content,
+  playlistId,
+}: PlaylistContentCardProps) {
+  const { updateContent, updatePlaylist, playlists } = useContentStore();
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
@@ -42,8 +58,8 @@ export default function PlaylistContentCard({ content, playlistId }: PlaylistCon
   };
 
   const handleRating = (value: number) => {
-    updateContent(content.id, { 
-      rating: content.rating === value ? null : value 
+    updateContent(content.id, {
+      rating: content.rating === value ? null : value,
     });
   };
 
@@ -56,9 +72,14 @@ export default function PlaylistContentCard({ content, playlistId }: PlaylistCon
   };
 
   const confirmRemove = () => {
-    updatePlaylist(playlistId, {
-      contentIds: (playlist?.contentIds || []).filter(id => id !== content.id)
-    });
+    const playlist = playlists.find((p) => p.id === playlistId); // Ensure playlist is defined
+    if (playlist) {
+      updatePlaylist(playlistId, {
+        contentIds: (playlist.contentIds || []).filter(
+          (id) => id !== content.id
+        ), // Use the defined playlist
+      });
+    }
     setIsDeleting(false);
     toast.success("Content removed from playlist");
   };
@@ -68,6 +89,13 @@ export default function PlaylistContentCard({ content, playlistId }: PlaylistCon
     setIsEditing(false);
     toast.success("Changes saved successfully");
   };
+
+  const playlist = playlists.find((p) => p.id === playlistId);
+  const contentIds = playlist ? playlist.contentIds : [];
+
+  if (!playlist) {
+    return <div>Playlist not found</div>;
+  }
 
   return (
     <>
@@ -80,7 +108,11 @@ export default function PlaylistContentCard({ content, playlistId }: PlaylistCon
           />
           <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
             <Button variant="secondary" size="sm" onClick={handleWatchedToggle}>
-              {content.watched ? <Check className="mr-2 h-4 w-4" /> : <Clock className="mr-2 h-4 w-4" />}
+              {content.watched ? (
+                <Check className="mr-2 h-4 w-4" />
+              ) : (
+                <Clock className="mr-2 h-4 w-4" />
+              )}
               {content.watched ? "Watched" : "Watch Later"}
             </Button>
             <Button variant="secondary" size="sm" onClick={handleEdit}>
@@ -94,8 +126,16 @@ export default function PlaylistContentCard({ content, playlistId }: PlaylistCon
 
         <CardContent className="flex-1 p-4">
           <div className="flex justify-between items-start mb-3">
-            <h3 className="font-semibold text-lg line-clamp-1">{content.title}</h3>
-            <Badge variant="secondary" className={cn("text-white ml-2 shrink-0", platformColors[content.platform as keyof typeof platformColors])}>
+            <h3 className="font-semibold text-lg line-clamp-1">
+              {content.title}
+            </h3>
+            <Badge
+              variant="secondary"
+              className={cn(
+                "text-white ml-2 shrink-0",
+                platformColors[content.platform as keyof typeof platformColors]
+              )}
+            >
               {content.platform}
             </Badge>
           </div>
@@ -149,14 +189,18 @@ export default function PlaylistContentCard({ content, playlistId }: PlaylistCon
               <Label>Title</Label>
               <Input
                 value={editedContent.title}
-                onChange={(e) => setEditedContent({ ...editedContent, title: e.target.value })}
+                onChange={(e) =>
+                  setEditedContent({ ...editedContent, title: e.target.value })
+                }
               />
             </div>
             <div className="grid gap-2">
               <Label>Platform</Label>
               <Select
                 value={editedContent.platform}
-                onValueChange={(value) => setEditedContent({ ...editedContent, platform: value })}
+                onValueChange={(value) =>
+                  setEditedContent({ ...editedContent, platform: value })
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select platform" />
@@ -190,7 +234,8 @@ export default function PlaylistContentCard({ content, playlistId }: PlaylistCon
           <DialogHeader>
             <DialogTitle>Remove from Playlist</DialogTitle>
             <DialogDescription>
-              Are you sure you want to remove "{content.title}" from this playlist?
+              Are you sure you want to remove "{content.title}" from this
+              playlist?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

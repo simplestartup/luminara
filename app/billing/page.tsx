@@ -1,5 +1,7 @@
 import { Metadata } from "next";
 import BillingContent from "@/components/billing/billing-content";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Billing - StreamTracker",
@@ -15,7 +17,9 @@ export default function BillingPage() {
           Manage your subscription and payments
         </p>
       </div>
-      <BillingContent />
+      <Suspense fallback={<div>Loading...</div>}>
+        <BillingContent />
+      </Suspense>
     </div>
   );
 }

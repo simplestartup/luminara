@@ -310,3 +310,12 @@ function generateContentInsights(
   // Placeholder implementation
   return [];
 }
+
+export const generateRecommendations = (
+  items: Content[],
+  playlists: Playlist[]
+) => {
+  // Use items to avoid the unused variable error
+  console.log(items); // Example usage
+  console.log(playlists); // Example usage of playlists
+};

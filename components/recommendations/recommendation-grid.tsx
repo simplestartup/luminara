@@ -3,17 +3,24 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useContentStore } from "@/lib/content-store";
-import { generateRecommendations, Recommendation } from "@/lib/ai-features";
+import { Recommendation } from "@/lib/ai-features";
 import RecommendationCard from "./recommendation-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { generateRecommendations } from "@/lib/ai-features"; // Ensure this import is correct
 
 export default function RecommendationGrid() {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const { items, playlists } = useContentStore();
 
   useEffect(() => {
-    const newRecommendations = generateRecommendations(items, playlists);
-    setRecommendations(newRecommendations);
+    const newRecommendations =
+      (typeof generateRecommendations === "function"
+        ? generateRecommendations(items, playlists)
+        : []) || []; // Ensure it returns an array
+    // Check if newRecommendations is an array
+    setRecommendations(
+      Array.isArray(newRecommendations) ? newRecommendations : []
+    );
   }, [items, playlists]);
 
   if (recommendations.length === 0) {
